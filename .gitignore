@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Bison/Flex
+parser.*pp
+tokens.*pp
