@@ -40,16 +40,21 @@ llvm::Value *NIdentifier::codeGen(CodeGenContext &context) {
 
 llvm::Value *NMethodCall::codeGen(CodeGenContext &context) {
   llvm::Function *FUNCTION = context.module->getFunction(id.name.c_str());
-  std::vector<llvm::Value *> args;
-  ExpressionList::const_iterator it;
-  for (it = arguments.begin(); it != arguments.end(); it++) {
-    args.push_back((**it).codeGen(context));
+  if (FUNCTION != NULL) {
+    std::vector<llvm::Value *> args;
+    ExpressionList::const_iterator it;
+    for (it = arguments.begin(); it != arguments.end(); it++) {
+      args.push_back((**it).codeGen(context));
+    }
+    std::cout << "Creating method call: " << id.name << std::endl;
+    llvm::CallInst *CALL =
+        llvm::CallInst::Create(FUNCTION->getFunctionType(), FUNCTION, args,
+                               id.name, context.currentBlock());
+    return CALL;
   }
-  std::cout << "Creating method call: " << id.name << std::endl;
-  llvm::CallInst *CALL =
-      llvm::CallInst::Create(FUNCTION->getFunctionType(), FUNCTION, args,
-                             id.name, context.currentBlock());
-  return CALL;
+  std::cerr << "Method signature: " << id.name << "does not exist!"
+            << std::endl;
+  return NULL;
 }
 
 llvm::Value *NBinaryOperator::codeGen(CodeGenContext &context) {
@@ -115,11 +120,11 @@ llvm::Value *NVariableDeclaration::codeGen(CodeGenContext &context) {
       new llvm::AllocaInst(TYPE, TYPE->getPointerAddressSpace(),
                            id.name.c_str(), context.currentBlock());
   context.locals()[id.name] = ALLOC;
-    if (assignmentExpr != NULL) {
-        NAssignment assign(id, *assignmentExpr);
-        assign.codeGen(context);
-    }
-    return ALLOC;
+  if (assignmentExpr != NULL) {
+    NAssignment assign(id, *assignmentExpr);
+    assign.codeGen(context);
+  }
+  return ALLOC;
 }
 llvm::Value *NFunctionDeclaration::codeGen(CodeGenContext &context) {
   std::vector<llvm::Type *> argTypes;
