@@ -52,7 +52,7 @@ llvm::Value *NMethodCall::codeGen(CodeGenContext &context) {
                                id.name, context.currentBlock());
     return CALL;
   }
-  std::cerr << "Method signature: " << id.name << "does not exist!"
+  std::cerr << "Method signature: " << id.name << " " << "does not exist!"
             << std::endl;
   return NULL;
 }
