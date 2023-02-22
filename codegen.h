@@ -19,7 +19,6 @@
 #include <map>
 #include <stack>
 
-using namespace llvm;
 
 class NBlock;
 
@@ -31,19 +30,19 @@ public:
 
 class CodeGenContext {
     std::stack<CodeGenBlock *> blocks;
-    Function *mainFunction;
-    static llvm::LLVMContext* context;
+    llvm::Function *mainFunction;
+    static llvm::LLVMContext *context;
 
 public:
-    Module *module;
-    CodeGenContext() { module = new Module("main", *context); }
+    llvm::Module *module;
+    CodeGenContext() { module = new llvm::Module("main", *context); }
+    static llvm::LLVMContext& getGlobalContext() { return *context; }
 
-    static llvm::LLVMContext* getGlobalContext() { return context; }
     
     void generateCode(NBlock& root);
-    GenericValue runCode();
-    std::map<std::string, Value*>& locals() { return blocks.top()->locals; }
-    BasicBlock *currentBlock() { return blocks.top()->block; }
-    void pushBlock(BasicBlock *block) { blocks.push(new CodeGenBlock()); blocks.top()->block = block; }
+    llvm::GenericValue runCode();
+    std::map<std::string, llvm::Value*>& locals() { return blocks.top()->locals; }
+    llvm::BasicBlock *currentBlock() { return blocks.top()->block; }
+    void pushBlock(llvm::BasicBlock *block) { blocks.push(new CodeGenBlock()); blocks.top()->block = block; }
     void popBlock() { CodeGenBlock *top = blocks.top(); blocks.pop(); delete top; }
 };
