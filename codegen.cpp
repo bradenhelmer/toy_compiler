@@ -10,8 +10,10 @@ static llvm::Type *typeOf(const NIdentifier &type) {
     return llvm::Type::getInt64Ty(CodeGenContext::getGlobalContext());
   } else if (type.name.compare("double") == 0) {
     return llvm::Type::getDoubleTy(CodeGenContext::getGlobalContext());
+  } else if (type.name.compare("void") == 0) {
+    return llvm::Type::getVoidTy(CodeGenContext::getGlobalContext());
   }
-  return llvm::Type::getVoidTy(CodeGenContext::getGlobalContext());
+  return NULL;
 }
 
 llvm::Value *NInteger::codeGen(CodeGenContext &context) {
@@ -97,7 +99,22 @@ llvm::Value *NExpressionStatement::codeGen(CodeGenContext &context) {
   std::cout << "Generating code for " << typeid(expression).name() << std::endl;
   return expression.codeGen(context);
 }
-llvm::Value *NVariableDeclaration::codeGen(CodeGenContext &context) {}
+llvm::Value *NVariableDeclaration::codeGen(CodeGenContext &context) {
+  std::cout << "Creating variable declaration " << type.name << " " << id.name
+            << std::endl;
+  llvm::Type *VARTYPE = typeOf(type);
+  if (VARTYPE == NULL) {
+    std::cerr << "Undefined type: " << type.name << std::endl;
+    return NULL;
+  } else if (VARTYPE->getTypeID() == llvm::Type::VoidTyID) {
+    std::cerr << "Cannot declare variable as void" << std::endl;
+    return NULL;
+  }
+  llvm::Type *TYPE = typeOf(type);
+  llvm::AllocaInst *ALLOC =
+      new llvm::AllocaInst(TYPE, TYPE->getPointerAddressSpace(),
+                           id.name.c_str(), context.currentBlock());
+}
 
 llvm::Value *NFunctionDeclaration::codeGen(CodeGenContext &context) {
   std::vector<llvm::Type *> argTypes;
