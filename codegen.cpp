@@ -114,8 +114,13 @@ llvm::Value *NVariableDeclaration::codeGen(CodeGenContext &context) {
   llvm::AllocaInst *ALLOC =
       new llvm::AllocaInst(TYPE, TYPE->getPointerAddressSpace(),
                            id.name.c_str(), context.currentBlock());
+  context.locals()[id.name] = ALLOC;
+    if (assignmentExpr != NULL) {
+        NAssignment assign(id, *assignmentExpr);
+        assign.codeGen(context);
+    }
+    return ALLOC;
 }
-
 llvm::Value *NFunctionDeclaration::codeGen(CodeGenContext &context) {
   std::vector<llvm::Type *> argTypes;
   VariableList::const_iterator it;
