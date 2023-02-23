@@ -2,7 +2,30 @@
 #include "node.h"
 #include "parser.hpp"
 
-void CodeGenContext::generateCode(NBlock &root) {}
+void CodeGenContext::generateCode(NBlock &root) {
+  std::cout << "Generating Code..." << std::endl;
+  std::vector<llvm::Type *> argTypes;
+  llvm::FunctionType *FTYPE = llvm::FunctionType::get(
+      llvm::Type::getVoidTy(CodeGenContext::getGlobalContext()), argTypes,
+      false);
+  mainFunction = llvm::Function::Create(
+      FTYPE, llvm::GlobalValue::InternalLinkage, "main", module);
+  llvm::BasicBlock *BBLOCK = llvm::BasicBlock::Create(
+      CodeGenContext::getGlobalContext(), "entry", mainFunction, 0);
+
+  pushBlock(BBLOCK);
+  root.codeGen(*this);
+  llvm::ReturnInst::Create(CodeGenContext::getGlobalContext(), BBLOCK);
+  popBlock();
+
+  llvm::PassBuilder PB;
+  llvm::ModuleAnalysisManager MAM;
+  PB.registerModuleAnalyses(MAM);
+  llvm::ModulePassManager MPM =
+      PB.buildPerModuleDefaultPipeline(llvm::OptimizationLevel::O2);
+  MPM.addPass(llvm::PrintModulePass(llvm::outs()));
+  MPM.run(*module, MAM);
+}
 llvm::GenericValue CodeGenContext::runCode() {}
 
 static llvm::Type *typeOf(const NIdentifier &type) {
@@ -52,8 +75,8 @@ llvm::Value *NMethodCall::codeGen(CodeGenContext &context) {
                                id.name, context.currentBlock());
     return CALL;
   }
-  std::cerr << "Method signature: " << id.name << " " << "does not exist!"
-            << std::endl;
+  std::cerr << "Method signature: " << id.name << " "
+            << "does not exist!" << std::endl;
   return NULL;
 }
 
