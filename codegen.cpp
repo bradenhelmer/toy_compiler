@@ -6,16 +6,16 @@ void CodeGenContext::generateCode(NBlock &root) {
   std::cout << "Generating Code..." << std::endl;
   std::vector<llvm::Type *> argTypes;
   llvm::FunctionType *FTYPE = llvm::FunctionType::get(
-      llvm::Type::getVoidTy(CodeGenContext::getGlobalContext()), argTypes,
+      llvm::Type::getVoidTy(TheContext), argTypes,
       false);
   mainFunction = llvm::Function::Create(
       FTYPE, llvm::GlobalValue::InternalLinkage, "main", module);
   llvm::BasicBlock *BBLOCK = llvm::BasicBlock::Create(
-      CodeGenContext::getGlobalContext(), "entry", mainFunction, 0);
+      TheContext, "entry", mainFunction, 0);
 
   pushBlock(BBLOCK);
   root.codeGen(*this);
-  llvm::ReturnInst::Create(CodeGenContext::getGlobalContext(), BBLOCK);
+  llvm::ReturnInst::Create(TheContext, BBLOCK);
   popBlock();
 
   llvm::PassBuilder PB;
@@ -26,15 +26,16 @@ void CodeGenContext::generateCode(NBlock &root) {
   MPM.addPass(llvm::PrintModulePass(llvm::outs()));
   MPM.run(*module, MAM);
 }
+
 llvm::GenericValue CodeGenContext::runCode() {}
 
 static llvm::Type *typeOf(const NIdentifier &type) {
   if (type.name.compare("int") == 0) {
-    return llvm::Type::getInt64Ty(CodeGenContext::getGlobalContext());
+    return llvm::Type::getInt64Ty(TheContext);
   } else if (type.name.compare("double") == 0) {
-    return llvm::Type::getDoubleTy(CodeGenContext::getGlobalContext());
+    return llvm::Type::getDoubleTy(TheContext);
   } else if (type.name.compare("void") == 0) {
-    return llvm::Type::getVoidTy(CodeGenContext::getGlobalContext());
+    return llvm::Type::getVoidTy(TheContext);
   }
   return NULL;
 }
@@ -42,13 +43,13 @@ static llvm::Type *typeOf(const NIdentifier &type) {
 llvm::Value *NInteger::codeGen(CodeGenContext &context) {
   std::cout << "Creating integer: " << value << std::endl;
   return llvm::ConstantInt::get(
-      llvm::Type::getInt64Ty(CodeGenContext::getGlobalContext()), value, true);
+      llvm::Type::getInt64Ty(TheContext), value, true);
 }
 
 llvm::Value *NDouble::codeGen(CodeGenContext &context) {
   std::cout << "Creating double: " << value << std::endl;
   return llvm::ConstantFP::get(
-      llvm::Type::getDoubleTy(CodeGenContext::getGlobalContext()), value);
+      llvm::Type::getDoubleTy(TheContext), value);
 }
 
 llvm::Value *NIdentifier::codeGen(CodeGenContext &context) {
@@ -117,14 +118,16 @@ llvm::Value *NBlock::codeGen(CodeGenContext &context) {
   StatementList::const_iterator it;
   llvm::Value *LAST = NULL;
   for (it = statements.begin(); it != statements.end(); it++) {
-    std::cout << "Generating code for " << typeid(**it).name() << std::endl;
+    std::cout << "Generating code for "
+              << "<EXPRESSIONTYPE>" << std::endl;
     LAST = (**it).codeGen(context);
   }
   std::cout << "Creating block..." << std::endl;
   return LAST;
 }
 llvm::Value *NExpressionStatement::codeGen(CodeGenContext &context) {
-  std::cout << "Generating code for " << typeid(expression).name() << std::endl;
+  std::cout << "Generating code for "
+            << "<EXPRESSIONTYPE> " << std::endl;
   return expression.codeGen(context);
 }
 llvm::Value *NVariableDeclaration::codeGen(CodeGenContext &context) {
@@ -161,14 +164,14 @@ llvm::Value *NFunctionDeclaration::codeGen(CodeGenContext &context) {
       llvm::Function::Create(FTYPE, llvm::GlobalValue::InternalLinkage,
                              id.name.c_str(), context.module);
   llvm::BasicBlock *BBBLOCK = llvm::BasicBlock::Create(
-      CodeGenContext::getGlobalContext(), "entry", FUNCTION, 0);
+TheContext, "entry", FUNCTION, 0);
   context.pushBlock(BBBLOCK);
 
   for (it = arguments.begin(); it != arguments.end(); it++) {
     (**it).codeGen(context);
   }
   block.codeGen(context);
-  llvm::ReturnInst::Create(CodeGenContext::getGlobalContext(), BBBLOCK);
+  llvm::ReturnInst::Create(TheContext, BBBLOCK);
   context.popBlock();
   std::cout << "Creating function: " << id.name << std::endl;
   return FUNCTION;
