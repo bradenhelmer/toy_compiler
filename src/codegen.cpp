@@ -6,12 +6,11 @@ void CodeGenContext::generateCode(NBlock &root) {
   std::cout << "Generating Code..." << std::endl;
   std::vector<llvm::Type *> argTypes;
   llvm::FunctionType *FTYPE = llvm::FunctionType::get(
-      llvm::Type::getVoidTy(TheContext), argTypes,
-      false);
+      llvm::Type::getVoidTy(TheContext), argTypes, false);
   mainFunction = llvm::Function::Create(
       FTYPE, llvm::GlobalValue::InternalLinkage, "main", module);
-  llvm::BasicBlock *BBLOCK = llvm::BasicBlock::Create(
-      TheContext, "entry", mainFunction, 0);
+  llvm::BasicBlock *BBLOCK =
+      llvm::BasicBlock::Create(TheContext, "entry", mainFunction, 0);
 
   pushBlock(BBLOCK);
   root.codeGen(*this);
@@ -42,14 +41,13 @@ static llvm::Type *typeOf(const NIdentifier &type) {
 
 llvm::Value *NInteger::codeGen(CodeGenContext &context) {
   std::cout << "Creating integer: " << value << std::endl;
-  return llvm::ConstantInt::get(
-      llvm::Type::getInt64Ty(TheContext), value, true);
+  return llvm::ConstantInt::get(llvm::Type::getInt64Ty(TheContext), value,
+                                true);
 }
 
 llvm::Value *NDouble::codeGen(CodeGenContext &context) {
   std::cout << "Creating double: " << value << std::endl;
-  return llvm::ConstantFP::get(
-      llvm::Type::getDoubleTy(TheContext), value);
+  return llvm::ConstantFP::get(llvm::Type::getDoubleTy(TheContext), value);
 }
 
 llvm::Value *NIdentifier::codeGen(CodeGenContext &context) {
@@ -163,8 +161,8 @@ llvm::Value *NFunctionDeclaration::codeGen(CodeGenContext &context) {
   llvm::Function *FUNCTION =
       llvm::Function::Create(FTYPE, llvm::GlobalValue::InternalLinkage,
                              id.name.c_str(), context.module);
-  llvm::BasicBlock *BBBLOCK = llvm::BasicBlock::Create(
-TheContext, "entry", FUNCTION, 0);
+  llvm::BasicBlock *BBBLOCK =
+      llvm::BasicBlock::Create(TheContext, "entry", FUNCTION, 0);
   context.pushBlock(BBBLOCK);
 
   for (it = arguments.begin(); it != arguments.end(); it++) {
