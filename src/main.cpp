@@ -6,9 +6,10 @@ extern int yyparse();
 extern NBlock* programBlock;
 
 int main(int argc, char **argv) {
-    std::cout << "TEST" << std::endl;
+
     yyparse();
-    std::cout << programBlock << std::endl;
+    std::cout << "TEST" << std::endl;
+    return 0;
 
     CodeGenContext context;
     context.generateCode(*programBlock);
