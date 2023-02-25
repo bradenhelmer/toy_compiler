@@ -32,15 +32,15 @@ public:
   template <typename T>
   Token(tokdef::TokenType type, T *ptrVal) : type(type), ptrVal(ptrVal) {}
 
-  ~Token() { delete this; }
+  ~Token() {}
 
   tokdef::TokenType getType() { return type; }
   void setTokenType(tokdef::TokenType type) { this->type = type; }
   template <typename T> T *getPtrVal() { return this->ptrVal; }
   void resetToken() {
-        this->type = tokdef::UNKNOWN;
-        this->value = nullptr;
-    }
+    this->type = tokdef::UNKNOWN;
+    this->value = nullptr;
+  }
 };
 
 #endif
