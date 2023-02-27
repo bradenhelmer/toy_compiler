@@ -5,14 +5,13 @@
 
 class Lexer {
 
-const char *srcBuffer;
-Token curToken;
+  const char *srcBuffer;
+  Token curToken;
 
 public:
-    Lexer(const char *srcBuffer) : srcBuffer(srcBuffer) {}
-    void skipWhiteSpace();
-    int lexToken();
-    void lexStringLiteral();
-    void lexNumericLiteral();
-
+  Lexer(const char *srcBuffer) : srcBuffer(srcBuffer) { curToken = Token(); }
+  void skipWhiteSpace();
+  int lexToken();
+  void lexStringLiteral();
+  void lexNumericLiteral();
 };

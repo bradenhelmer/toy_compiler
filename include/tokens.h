@@ -5,16 +5,15 @@
 #define TOKENS_H
 
 namespace tokdef {
-
 // Macro magic for token enum
 enum TokenType : unsigned short {
 #define TOKEN(X) X,
 #include "tokenDefs.h"
   NUM_TOKENS
 };
-inline const char *getTokenName(TokenType type);
+const char *getTokenName(tokdef::TokenType type);
 const char *getPunctuatorSeq(TokenType type);
-} // namespace tokdef
+} //namespace tokdef
 
 class Token {
   tokdef::TokenType type;

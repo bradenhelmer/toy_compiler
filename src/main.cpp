@@ -1,6 +1,5 @@
 #include <iostream>
-#include "../include/tokens.h"
-
+#include "tokens.h"
 
 int main(int argc, char **argv) {
 

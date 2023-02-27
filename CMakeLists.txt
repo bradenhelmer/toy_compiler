@@ -12,6 +12,6 @@ set(
 )
 
 add_executable(compiler ${SOURCES})
-target_include_directories(compiler ${BUILD_DIR} ${INCLUDE_DIRECTORIES})
 
+target_include_directories(compiler PUBLIC "build" "include")
 
