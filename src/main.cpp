@@ -1,17 +1,12 @@
-#include "codegen.h"
-#include "node.h"
 #include <iostream>
+#include "../include/tokens.h"
 
-extern int yyparse();
-extern NBlock *programBlock;
 
 int main(int argc, char **argv) {
 
-  yyparse();
-  std::cout << "TEST" << std::endl;
-  return 0;
-
-  CodeGenContext context;
-  context.generateCode(*programBlock);
+  for (int type = tokdef::UNKNOWN; type < tokdef::NUM_TOKENS; type++) {
+        tokdef::TokenType TYPE = static_cast<tokdef::TokenType>(type); 
+        std::cout << *tokdef::getTokenName(TYPE) << std::endl;
+    }
   return 0;
 }

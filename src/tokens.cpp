@@ -8,11 +8,11 @@ static const char *const TokenNames[] = {
 #include "../include/tokenDefs.h"
     nullptr};
 
-inline const char *tokdef::getTokenName(TokenType type) {
+inline const char *tokdef::getTokenName(tokdef::TokenType type) {
   return type < NUM_TOKENS ? TokenNames[type] : nullptr;
 }
 
-const char *tokdef::getPunctuatorSeq(TokenType type) {
+const char *tokdef::getPunctuatorSeq(tokdef::TokenType type) {
   switch (type) {
 #define TOKEN_PUNCTUATOR(NAME, SEQ)                                            \
   case NAME:                                                                   \

@@ -8,11 +8,11 @@ namespace tokdef {
 
 // Macro magic for token enum
 enum TokenType : unsigned short {
-#define TOKEN(X) X
+#define TOKEN(X) X,
 #include "tokenDefs.h"
   NUM_TOKENS
 };
-const char *getTokenName(TokenType type);
+inline const char *getTokenName(TokenType type);
 const char *getPunctuatorSeq(TokenType type);
 } // namespace tokdef
 
@@ -39,7 +39,7 @@ public:
   template <typename T> T *getPtrVal() { return this->ptrVal; }
   void resetToken() {
     this->type = tokdef::UNKNOWN;
-    this->value = nullptr;
+    this->ptrVal = nullptr;
   }
 };
 
