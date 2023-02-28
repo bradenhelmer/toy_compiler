@@ -1,6 +1,8 @@
 // lexer.h
 // ~~~~~~~
 // This file defines the lexer interface
+#ifndef LEXER_H
+#define LEXER_H
 #include "tokens.h"
 
 class Lexer {
@@ -9,9 +11,11 @@ class Lexer {
   Token curToken;
 
 public:
-  Lexer(const char *srcBuffer) : srcBuffer(srcBuffer) { curToken = Token(); }
+  Lexer(const char *srcBuffer);
   void skipWhiteSpace();
-  int lexToken();
+  void skipComment();
+  Token *lexToken();
   void lexStringLiteral();
   void lexNumericLiteral();
 };
+#endif

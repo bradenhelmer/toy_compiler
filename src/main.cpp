@@ -1,11 +1,16 @@
 #include <iostream>
 #include "tokens.h"
+#include "lexer.h"
 
 int main(int argc, char **argv) {
 
-  for (int type = tokdef::UNKNOWN; type < tokdef::NUM_TOKENS; type++) {
-        tokdef::TokenType TYPE = static_cast<tokdef::TokenType>(type); 
-        std::cout << *tokdef::getTokenName(TYPE) << std::endl;
+    const char *test = "This is a test program";
+    
+    Lexer *lex = new Lexer(test);
+    Token *tok = lex->lexToken();
+    if (tok->getType() == tokdef::ID) {
+        std::cout << tok->getPtrVal() << std::endl;
+        return 0;
     }
-  return 0;
+    return 1;
 }
