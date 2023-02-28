@@ -10,6 +10,7 @@ set(
     src/tokens.cpp
     src/main.cpp
 )
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(compiler ${SOURCES})
 
