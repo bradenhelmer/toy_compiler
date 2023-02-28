@@ -16,3 +16,4 @@ add_executable(compiler ${SOURCES})
 
 target_include_directories(compiler PUBLIC "build" "include")
 
+add_custom_target(test COMMAND ./compiler)
