@@ -1,8 +1,9 @@
 // common.h
 // ~~~~~~~~
 // Common macro definitions
+#ifndef COMMON_H
+#define COMMON_H
 
-#ifndef TEST_OUT
-#include <iostream>
-#define TEST_OUT(X) std::cout << X << std::endl;
+#define TOK_OUT "Lexed Token: "
+
 #endif

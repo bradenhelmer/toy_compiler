@@ -1,16 +1,15 @@
-#include <iostream>
-#include "tokens.h"
+#include "common.h"
 #include "lexer.h"
+#include "tokens.h"
+#include <iostream>
 
 int main(int argc, char **argv) {
-
-    const char *test = "This is a test program";
-    
-    Lexer *lex = new Lexer(test);
-    Token *tok = lex->lexToken();
-    if (tok->getType() == tokdef::ID) {
-        std::cout << tok->getPtrVal() << std::endl;
-        return 0;
-    }
-    return 1;
+  const char *test = "This is a test";
+  Lexer lex = Lexer(test);
+  Token *tok;
+  for (int i = 0; i < 4; i++) {
+    tok = lex.lexToken();
+    tok->tokenOut();
+  }
+  return 0;
 }

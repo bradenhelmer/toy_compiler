@@ -1,13 +1,11 @@
 // lexer.cpp
 // ~~~~~~~
 // This file implements the lexer interface
-#include "common.h"
 #include "lexer.h"
+#include "common.h"
 #include "token_buff.h"
-#include <cstdlib>
-#include <ctype.h>
+#include <cstring>
 #include <iostream>
-#include <memory>
 
 Lexer::Lexer(const char *srcBuffer) : srcBuffer(srcBuffer) {
   curToken = Token();
@@ -28,7 +26,7 @@ void Lexer::skipComment() {
 Token *Lexer::lexToken() {
   // Assuming parser has already used the token, we can reset its values here.
   curToken.resetToken();
-  TEST_OUT("TEST");
+
   // Skipping comments and whitespace.
   if (*srcBuffer == '#')
     skipComment();
@@ -37,13 +35,22 @@ Token *Lexer::lexToken() {
 
   // First we need to check if the next token could potentially be an identifier
   if (*srcBuffer == '_' || isalpha(*srcBuffer)) {
+
+    // Set token type to identifier and create new token buffer
+    curToken.setTokenType(tokdef::ID);
     TokenBuffer tokBuf = TokenBuffer();
+
+    // Traverse identifier and store in token buffer.
     do {
       tokBuf.append(*srcBuffer);
       srcBuffer++;
     } while (*srcBuffer == '_' || isalnum(*srcBuffer));
-    curToken.setTokenType(tokdef::ID);
-    curToken.setPtrVal(new std::string(tokBuf.str()));
+
+    srcBuffer++;
+
+    std::string *id = new std::string;
+    *id = tokBuf.str();
+    curToken.setPtrVal(id);
     return &curToken;
   }
 
@@ -51,13 +58,20 @@ Token *Lexer::lexToken() {
     lexNumericLiteral();
     return &curToken;
   }
+
+  if (*srcBuffer == EOF || *srcBuffer == '\0')
+    curToken.setTokenType(tokdef::EoF);
+  return &curToken;
 }
 
 void Lexer::lexNumericLiteral() {
   TokenBuffer tokBuf = TokenBuffer();
   bool hasDot = false;
+
+  // Build numeric literal
   do {
     tokBuf.append(*srcBuffer);
+    // Check if token has more than one decimal place
     if (*srcBuffer == '.' && hasDot) {
       curToken.setTokenType(tokdef::ERROR);
       curToken.setPtrVal(new std::string(
@@ -67,7 +81,7 @@ void Lexer::lexNumericLiteral() {
       hasDot = true;
     }
     srcBuffer++;
-  } while (!isspace(*srcBuffer));
+  } while (!isspace(*srcBuffer) || isdigit(*srcBuffer) || *srcBuffer == '.');
   curToken.setTokenType(hasDot ? tokdef::FP : tokdef::INT);
   curToken.setPtrVal(new std::string(tokBuf.str()));
 }

@@ -7,16 +7,17 @@
 
 class TokenBuffer {
 public:
-    TokenBuffer();
-    ~TokenBuffer();
+  TokenBuffer();
+  ~TokenBuffer();
 
-    void append(char c);
-    const char* str() const;
+  void append(char c);
+  const char *str() const;
+  size_t length() const;
 
 private:
-    char* buffer_;
-    size_t size_;
-    size_t length_;
+  char *buffer_;
+  size_t size_;
+  size_t length_;
 };
 
 #endif

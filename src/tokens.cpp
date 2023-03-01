@@ -15,7 +15,7 @@ const char *tokdef::getTokenName(tokdef::TokenType type) {
 const char *tokdef::getPunctuatorSeq(tokdef::TokenType type) {
   switch (type) {
 #define TOKEN_PUNCTUATOR(NAME, SEQ)                                            \
-case tokdef::NAME:                                                                   \
+  case tokdef::NAME:                                                           \
     return SEQ;
 #include "../include/tokenDefs.h"
   default:
