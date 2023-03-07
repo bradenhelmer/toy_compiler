@@ -143,7 +143,6 @@ Token *Lexer::lexNumericLiteral() {
     *num += *srcBuffer;
     ++srcBuffer;
   } while (isdigit(*srcBuffer) || *srcBuffer == '.');
-  ++srcBuffer;
   curToken->setTokenType(hasDot ? tokdef::FP : tokdef::INT);
   curToken->setPtrVal(num);
   return curToken;
