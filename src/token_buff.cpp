@@ -20,7 +20,6 @@ void TokenBuffer::append(char c) {
   }
   buffer_[length_] = c;
   length_++;
-  buffer_[length_] = '\0';
 }
 
 const char *TokenBuffer::str() const { return buffer_; }

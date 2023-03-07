@@ -1,89 +1,126 @@
 // lexer.cpp
-// ~~~~~~~
+// ~~~~~~~~~
 // This file implements the lexer interface
 #include "lexer.h"
 #include "common.h"
 #include "token_buff.h"
-#include <cstring>
 #include <iostream>
 
 Lexer::Lexer(const char *srcBuffer) : srcBuffer(srcBuffer) {
-  curToken = Token();
+  curToken = new Token();
 }
 
 void Lexer::skipWhiteSpace() {
   while (isspace(*srcBuffer))
-    srcBuffer++;
+    ++srcBuffer;
 }
 
 void Lexer::skipComment() {
   do {
-    srcBuffer++;
+    ++srcBuffer;
   } while (*srcBuffer != '\n');
-  srcBuffer++;
+  ++srcBuffer;
 }
 
 Token *Lexer::lexToken() {
-  // Assuming parser has already used the token, we can reset its values here.
-  curToken.resetToken();
+  // Reset token values
+  curToken->resetToken();
 
-  // Skipping comments and whitespace.
-  if (*srcBuffer == '#')
-    skipComment();
+  // First, advance through whitespace
   if (isspace(*srcBuffer))
     skipWhiteSpace();
 
-  // First we need to check if the next token could potentially be an identifier
-  if (*srcBuffer == '_' || isalpha(*srcBuffer)) {
-
-    // Set token type to identifier and create new token buffer
-    curToken.setTokenType(tokdef::ID);
+  // Get character at buffer
+  const char curChar = *srcBuffer;
+  
+  // Check for possible identifier
+  if (curChar == '_' || isalnum(curChar)) {
+    curToken->setTokenType(tokdef::ID);
     TokenBuffer tokBuf = TokenBuffer();
-
-    // Traverse identifier and store in token buffer.
     do {
       tokBuf.append(*srcBuffer);
-      srcBuffer++;
-    } while (*srcBuffer == '_' || isalnum(*srcBuffer));
-
-    srcBuffer++;
-
-    std::string *id = new std::string;
-    *id = tokBuf.str();
-    curToken.setPtrVal(id);
-    return &curToken;
+      ++srcBuffer;
+    } while (isalnum(*srcBuffer) || *srcBuffer == '_');
+    ++srcBuffer;
+    std::string *id = new std::string(tokBuf.str());
+    curToken->setPtrVal(id);
+    return curToken;
   }
 
-  if (isdigit(*srcBuffer)) {
-    lexNumericLiteral();
-    return &curToken;
-  }
+  // Check for numeric literaliteral
+  if (isdigit(curChar))
+    return lexNumericLiteral();
 
-  if (*srcBuffer == EOF || *srcBuffer == '\0')
-    curToken.setTokenType(tokdef::EoF);
-  return &curToken;
-}
+  if (curChar == '#')
+    skipComment();
 
-void Lexer::lexNumericLiteral() {
-  TokenBuffer tokBuf = TokenBuffer();
-  bool hasDot = false;
-
-  // Build numeric literal
-  do {
-    tokBuf.append(*srcBuffer);
-    // Check if token has more than one decimal place
-    if (*srcBuffer == '.' && hasDot) {
-      curToken.setTokenType(tokdef::ERROR);
-      curToken.setPtrVal(new std::string(
-          "Only one decimal place allowed in numeric literal!"));
-      return;
-    } else if (*srcBuffer == '.') {
-      hasDot = true;
+  switch (curChar) {
+  case 0:
+    curToken->setTokenType(tokdef::EoF);
+    break;
+  case '(':
+    curToken->setTokenType(tokdef::LPAREN);
+    break;
+  case ')':
+    curToken->setTokenType(tokdef::RPAREN);
+    break;
+  case '{':
+    curToken->setTokenType(tokdef::LBRACE);
+    break;
+  case '}':
+    curToken->setTokenType(tokdef::RBRACE);
+    break;
+  case '-':
+    curToken->setTokenType(tokdef::MINUS);
+    break;
+  case '+':
+    curToken->setTokenType(tokdef::PLUS);
+    break;
+  case '*':
+    curToken->setTokenType(tokdef::MULT);
+    break;
+  case '/':
+    curToken->setTokenType(tokdef::DIV);
+    break;
+  case '=':
+    if (peek() == '=') {
+      ++srcBuffer;
+      curToken->setTokenType(tokdef::EQUAL);
+    } else {
+      curToken->setTokenType(tokdef::ASSIGN);
     }
-    srcBuffer++;
-  } while (!isspace(*srcBuffer) || isdigit(*srcBuffer) || *srcBuffer == '.');
-  curToken.setTokenType(hasDot ? tokdef::FP : tokdef::INT);
-  curToken.setPtrVal(new std::string(tokBuf.str()));
+    break;
+  case '!':
+    if (peek() == '=') {
+      ++srcBuffer;
+      curToken->setTokenType(tokdef::NOTEQUAL);
+    }
+    break;
+  case '<':
+    if (peek() == '=') {
+      ++srcBuffer;
+      curToken->setTokenType(tokdef::LESSEQUALTHAN);
+    } else {
+      curToken->setTokenType(tokdef::LESSTHAN);
+    }
+    break;
+  case '>':
+    if (peek() == '=') {
+      ++srcBuffer;
+      curToken->setTokenType(tokdef::GREATEREQUALTHAN);
+    } else {
+      curToken->setTokenType(tokdef::GREATEREQUALTHAN);
+    }
+    break;
+  }
+
+  // At this point, we can assume that we have lexed a successful token and
+  // advance the pointer to the next position. Except for an EoF
+  /* if (curToken->getType() != tokdef::EoF) */
+    ++srcBuffer;
+  return curToken;
 }
 
-void Lexer::lexStringLiteral() {}
+Token *Lexer::lexNumericLiteral() {}
+
+Token *Lexer::lexStringLiteral() {}

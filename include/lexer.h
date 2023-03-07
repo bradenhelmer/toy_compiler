@@ -12,11 +12,13 @@ public:
   void skipWhiteSpace();
   void skipComment();
   Token *lexToken();
-  void lexStringLiteral();
-  void lexNumericLiteral();
+  Token *lexStringLiteral();
+  Token *lexNumericLiteral();
+  bool isAtEnd() const { return *srcBuffer == '\0'; }
+  const char peek() const { return *(srcBuffer + 1); }
 
 private:
   const char *srcBuffer;
-  Token curToken;
+  Token *curToken;
 };
 #endif

@@ -21,8 +21,11 @@ const char *getPunctuatorSeq(TokenType type);
 // Token class: Holds a TokenType enum value for the parser to used
 // Additionally holds a
 class Token {
-  tokdef::TokenType type;
-  std::string *ptrVal;
+    const char* lexOut = "Lexed Token: ";
+
+private:
+    tokdef::TokenType type;
+    std::string *ptrVal;
 
 public:
   // Default set token type to unknown
@@ -45,20 +48,20 @@ public:
   // Pretty prints token
   void tokenOut() const {
     if (isIdentifier() || isLiteralOrNumeric()) {
-      std::cout << TOK_OUT << getPtrVal() << " (" << tokdef::getTokenName(type)
+      std::cout << lexOut << getPtrVal() << " (" << tokdef::getTokenName(type)
                 << ")" << std::endl;
     } else if (isPunctuator()) {
-      std::cout << TOK_OUT << tokdef::getPunctuatorSeq(type) << "("
+      std::cout << lexOut << tokdef::getPunctuatorSeq(type) << " ("
                 << tokdef::getTokenName(type) << ")" << std::endl;
     } else {
-      std::cout << TOK_OUT << tokdef::getTokenName(type) << std::endl;
+      std::cout << lexOut << tokdef::getTokenName(type) << std::endl;
     }
   }
 
   // Resets token
   void resetToken() {
     this->type = tokdef::UNKNOWN;
-    delete ptrVal;
+    ptrVal = nullptr;
   }
   void setPtrVal(std::string *val) { ptrVal = val; }
   void setTokenType(tokdef::TokenType type) { this->type = type; }

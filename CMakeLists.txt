@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(
     SOURCES
     src/token_buff.cpp
+    src/utils.cpp
     src/tokens.cpp
     src/lexer.cpp
     src/main.cpp
