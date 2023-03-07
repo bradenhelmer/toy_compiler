@@ -3,7 +3,6 @@
 // This file implements the lexer interface
 #include "lexer.h"
 #include "common.h"
-#include "token_buff.h"
 #include <iostream>
 
 Lexer::Lexer(const char *srcBuffer) : srcBuffer(srcBuffer) {
@@ -32,24 +31,24 @@ Token *Lexer::lexToken() {
 
   // Get character at buffer
   const char curChar = *srcBuffer;
-  
+
+  // Check for numeric literal
+  if (isdigit(curChar)) {
+   return lexNumericLiteral();
+  }
+
+
   // Check for possible identifier
-  if (curChar == '_' || isalnum(curChar)) {
+  if (curChar == '_' || isalpha(curChar)) {
     curToken->setTokenType(tokdef::ID);
-    TokenBuffer tokBuf = TokenBuffer();
+    std::string *id = new std::string;
     do {
-      tokBuf.append(*srcBuffer);
+      *id += *srcBuffer;
       ++srcBuffer;
     } while (isalnum(*srcBuffer) || *srcBuffer == '_');
-    ++srcBuffer;
-    std::string *id = new std::string(tokBuf.str());
     curToken->setPtrVal(id);
     return curToken;
   }
-
-  // Check for numeric literaliteral
-  if (isdigit(curChar))
-    return lexNumericLiteral();
 
   if (curChar == '#')
     skipComment();
@@ -116,11 +115,30 @@ Token *Lexer::lexToken() {
 
   // At this point, we can assume that we have lexed a successful token and
   // advance the pointer to the next position. Except for an EoF
-  /* if (curToken->getType() != tokdef::EoF) */
+  if (curToken->getType() != tokdef::EoF)
     ++srcBuffer;
   return curToken;
 }
 
-Token *Lexer::lexNumericLiteral() {}
+Token *Lexer::lexNumericLiteral() {
+  bool hasDot = false;
+  std::string *num = new std::string;
+  do {
+    if (*srcBuffer == '.') {
+      if (hasDot) {
+        curToken->setTokenType(tokdef::ERROR);
+        curToken->setPtrVal(new std::string(
+            "Numeric constants may only contain one decimal point!"));
+        return curToken;
+      }
+      hasDot = true;
+    }
+    *num += *srcBuffer;
+    ++srcBuffer;
+  } while (isdigit(*srcBuffer) || *srcBuffer == '.');
+  curToken->setTokenType(hasDot ? tokdef::FP : tokdef::INT);
+  curToken->setPtrVal(num);
+  return curToken;
+}
 
 Token *Lexer::lexStringLiteral() {}

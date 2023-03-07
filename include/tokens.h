@@ -51,7 +51,7 @@ public:
       std::cout << lexOut << getPtrVal() << " (" << tokdef::getTokenName(type)
                 << ")" << std::endl;
     } else if (isPunctuator()) {
-      std::cout << lexOut << tokdef::getPunctuatorSeq(type) << " ("
+      std::cout << lexOut << tokdef::getPunctuatorSeq(type) << "("
                 << tokdef::getTokenName(type) << ")" << std::endl;
     } else {
       std::cout << lexOut << tokdef::getTokenName(type) << std::endl;
