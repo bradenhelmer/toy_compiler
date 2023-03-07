@@ -18,7 +18,9 @@ private:
 
   std::unique_ptr<ast::NExpression> parseExpression();
   std::unique_ptr<ast::NStatement> parseStatement();
-  std::unique_ptr<ast::NIdentifier> parserIdentifier();
+  std::unique_ptr<ast::NInteger> parseInteger();
+  std::unique_ptr<ast::NInteger> parseDouble();
+  std::unique_ptr<ast::NIdentifier> parseIdentifier();
   std::unique_ptr<ast::NMethodCall> parseMethodCall();
   std::unique_ptr<ast::NBinaryOperator> parserBinaryOperator();
   std::unique_ptr<ast::NAssignment> parseAssignment();
