@@ -108,9 +108,11 @@ Token *Lexer::lexToken() {
       ++srcBuffer;
       curToken->setTokenType(tokdef::GREATEREQUALTHAN);
     } else {
-      curToken->setTokenType(tokdef::GREATEREQUALTHAN);
+      curToken->setTokenType(tokdef::GREATERTHAN);
     }
     break;
+  case '"':
+    return lexStringLiteral();
   }
 
   // At this point, we can assume that we have lexed a successful token and
@@ -136,9 +138,21 @@ Token *Lexer::lexNumericLiteral() {
     *num += *srcBuffer;
     ++srcBuffer;
   } while (isdigit(*srcBuffer) || *srcBuffer == '.');
+  ++srcBuffer;
   curToken->setTokenType(hasDot ? tokdef::FP : tokdef::INT);
   curToken->setPtrVal(num);
   return curToken;
 }
 
-Token *Lexer::lexStringLiteral() {}
+Token *Lexer::lexStringLiteral() {
+  curToken->setTokenType(tokdef::STRLITERAL);
+  std::string *literal = new std::string;
+  ++srcBuffer;
+  while (*srcBuffer != '"') {
+    *literal += *srcBuffer;
+    ++srcBuffer;
+  }
+  ++srcBuffer;
+  curToken->setPtrVal(literal);
+  return curToken;
+}
