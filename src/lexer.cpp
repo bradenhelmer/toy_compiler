@@ -34,9 +34,8 @@ Token *Lexer::lexToken() {
 
   // Check for numeric literal
   if (isdigit(curChar)) {
-   return lexNumericLiteral();
+    return lexNumericLiteral();
   }
-
 
   // Check for possible identifier
   if (curChar == '_' || isalpha(curChar)) {
@@ -56,6 +55,12 @@ Token *Lexer::lexToken() {
   switch (curChar) {
   case 0:
     curToken->setTokenType(tokdef::EoF);
+    break;
+  case '.':
+    curToken->setTokenType(tokdef::DOT);
+    break;
+  case ',':
+    curToken->setTokenType(tokdef::COMMA);
     break;
   case '(':
     curToken->setTokenType(tokdef::LPAREN);

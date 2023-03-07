@@ -17,7 +17,6 @@ int main(int argc, char **argv) {
     tok->tokenOut();
     tok = lex->lexToken();
   }
-
   std::cout << "------------\nEND OUTPUT\n";
   return 0;
 }
