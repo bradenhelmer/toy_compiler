@@ -13,8 +13,19 @@ public:
   Parser(Lexer *lexer);
 private:
   Token *tok;
-  ast::NBlock *root;
+  std::unique_ptr<ast::NBlock> root;
   Lexer *lexer;
+
+  void parseExpression();
+  void parseStatement();
+  void parserIdentifier();
+  void parseMethodCall();
+  void parserBinaryOperator();
+  void parseAssignment();
+  void parseBlock();
+  void parseExpressionStatement();
+  void parseVariableDeclaration();
+  void parseFunctionDeclatration();
 
 };
 #endif

@@ -5,5 +5,5 @@
 
 Parser::Parser(Lexer *lexer) : lexer(lexer) {
   tok = new Token();
-  root = new ast::NBlock();
+  root = std::make_unique<ast::NBlock>();
 }
