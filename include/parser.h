@@ -10,12 +10,12 @@
 class Parser {
 public:
   ast::NBlock *parseProgram();
-  Parser(Lexer *lexer);
+  Parser(Lexer &lexer);
 
 private:
   Token *tok;
   ast::NBlock *root;
-  Lexer *lexer;
+  Lexer &lexer;
 
   ast::NExpression *parseExpression();
   ast::NStatement *parseStatement();

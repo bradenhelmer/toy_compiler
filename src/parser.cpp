@@ -3,7 +3,7 @@
 // Implementation of parser class
 #include "parser.h"
 
-Parser::Parser(Lexer *lexer) : lexer(lexer) {
+Parser::Parser(Lexer &lexer) : lexer(lexer) {
   tok = new Token();
   root = new ast::NBlock();
 }
@@ -16,7 +16,7 @@ ast::NInteger *Parser::parseInteger() {
   // Get pointer val from the token an convert to integer
   // and eat next token
   int val = std::stoi(tok->getPtrVal());
-  tok = lexer->lexToken();
+  tok = lexer.lexToken();
 
   // Create pointer for new ast node and return
   ast::NInteger *result = new ast::NInteger(val);
@@ -31,7 +31,7 @@ ast::NDouble *Parser::parseDouble() {
   // Get pointer val from the token an convert to double
   // and eat next token
   double val = std::stod(tok->getPtrVal());
-  tok = lexer->lexToken();
+  tok = lexer.lexToken();
 
   // Create pointer for new ast node and return
   ast::NDouble *result = new ast::NDouble(val);
@@ -41,6 +41,6 @@ ast::NDouble *Parser::parseDouble() {
 ast::NIdentifier *Parser::parseIdentifier() {
   assert(tok->getType() == tokdef::ID);
   ast::NIdentifier *result = new ast::NIdentifier(tok->getPtrVal());
-  tok = lexer->lexToken();
+  tok = lexer.lexToken();
   return result;
 }
