@@ -5,10 +5,10 @@
 
 Parser::Parser(Lexer *lexer) : lexer(lexer) {
   tok = new Token();
-  root = std::make_unique<ast::NBlock>();
+  root = new ast::NBlock();
 }
 
-std::unique_ptr<ast::NInteger> Parser::parseInteger() {
+ast::NInteger *Parser::parseInteger() {
   // Assertion that the current token is of type integer,
   // this function should be called if a tokdef::INT is encountered.
   assert(tok->getType() == tokdef::INT);
@@ -19,11 +19,11 @@ std::unique_ptr<ast::NInteger> Parser::parseInteger() {
   tok = lexer->lexToken();
 
   // Create pointer for new ast node and return
-  std::unique_ptr<ast::NInteger> result = std::make_unique<ast::NInteger>(val);
-  return std::move(result);
+  ast::NInteger *result = new ast::NInteger(val);
+  return result;
 }
 
-std::unique_ptr<ast::NDouble> Parser::parseDouble() {
+ast::NDouble *Parser::parseDouble() {
   // Assertion that the current token is of type double or floating point,
   // this function should be called if a tokdef::FP is encountered.
   assert(tok->getType() == tokdef::FP);
@@ -34,15 +34,13 @@ std::unique_ptr<ast::NDouble> Parser::parseDouble() {
   tok = lexer->lexToken();
 
   // Create pointer for new ast node and return
-  std::unique_ptr<ast::NDouble> result = std::make_unique<ast::NDouble>(val);
-  return std::move(result);
+  ast::NDouble *result = new ast::NDouble(val);
+  return result;
 }
 
-std::unique_ptr<ast::NIdentifier> Parser::parseIdentifier() {
+ast::NIdentifier *Parser::parseIdentifier() {
   assert(tok->getType() == tokdef::ID);
-  std::unique_ptr<ast::NIdentifier> result =
-      std::make_unique<ast::NIdentifier>(tok->getPtrVal());
+  ast::NIdentifier *result = new ast::NIdentifier(tok->getPtrVal());
   tok = lexer->lexToken();
-  return std::move(result);
+  return result;
 }
-

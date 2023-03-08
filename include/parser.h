@@ -14,7 +14,7 @@ public:
 
 private:
   Token *tok;
-  std::unique_ptr<ast::NBlock> root;
+  ast::NBlock *root;
   Lexer *lexer;
 
   ast::NExpression *parseExpression();
