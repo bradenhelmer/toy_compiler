@@ -11,22 +11,24 @@ class Parser {
 public:
   ast::NBlock *parseProgram();
   Parser(Lexer *lexer);
+
 private:
   Token *tok;
   std::unique_ptr<ast::NBlock> root;
   Lexer *lexer;
 
-  std::unique_ptr<ast::NExpression> parseExpression();
-  std::unique_ptr<ast::NStatement> parseStatement();
-  std::unique_ptr<ast::NInteger> parseInteger();
-  std::unique_ptr<ast::NInteger> parseDouble();
-  std::unique_ptr<ast::NIdentifier> parseIdentifier();
-  std::unique_ptr<ast::NMethodCall> parseMethodCall();
-  std::unique_ptr<ast::NBinaryOperator> parserBinaryOperator();
-  std::unique_ptr<ast::NAssignment> parseAssignment();
-  std::unique_ptr<ast::NBlock> parseBlock();
-  std::unique_ptr<ast::NVariableDeclaration> parseVariableDeclaration();
-  std::unique_ptr<ast::NFunctionDeclaration> parseFunctionDeclatration();
-
+  ast::NExpression *parseExpression();
+  ast::NStatement *parseStatement();
+  ast::NInteger *parseInteger();
+  ast::NDouble *parseDouble();
+  ast::NStrLiteral *parseStrLiteral();
+  ast::NCharConstant *parseCharConstant();
+  ast::NIdentifier *parseIdentifier();
+  ast::NMethodCall *parseMethodCall();
+  ast::NBinaryOperator *parseBinaryOperator();
+  ast::NAssignment *parseAssignment();
+  ast::NBlock *parseBlock();
+  ast::NVariableDeclaration *parseVariableDeclaration();
+  ast::NFunctionDeclaration *parseFunctionDeclaration();
 };
 #endif

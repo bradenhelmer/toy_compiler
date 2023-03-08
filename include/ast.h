@@ -37,6 +37,20 @@ public:
   virtual llvm::Value *codeGen(CodeGenContext &context);
 };
 
+class NStrLiteral : public NExpression {
+public:
+  const std::string value;
+  NStrLiteral(const std::string value) : value(value) {}
+  virtual llvm::Value *codeGen(CodeGenContext &context);
+};
+
+class NCharConstant : public NExpression {
+public:
+  const char value;
+  NCharConstant(const char value) : value(value) {}
+  virtual llvm::Value *codeGen(CodeGenContext &context);
+};
+
 class NIdentifier : public NExpression {
 public:
   std::string name;
@@ -64,7 +78,7 @@ public:
   virtual llvm::Value *codeGen(CodeGenContext &context);
 };
 
-class NAssignment : public NExpression {
+class NAssignment : public NStatement {
 public:
   NIdentifier &lhs;
   NExpression &rhs;
