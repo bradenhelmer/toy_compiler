@@ -25,7 +25,6 @@ private:
   std::unique_ptr<ast::NBinaryOperator> parserBinaryOperator();
   std::unique_ptr<ast::NAssignment> parseAssignment();
   std::unique_ptr<ast::NBlock> parseBlock();
-  std::unique_ptr<ast::NExpressionStatement> parseExpressionStatement();
   std::unique_ptr<ast::NVariableDeclaration> parseVariableDeclaration();
   std::unique_ptr<ast::NFunctionDeclaration> parseFunctionDeclatration();
 

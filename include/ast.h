@@ -79,13 +79,6 @@ public:
   virtual llvm::Value *codeGen(CodeGenContext &context);
 };
 
-class NExpressionStatement : public NStatement {
-public:
-  NExpression &expression;
-  NExpressionStatement(NExpression &expression) : expression(expression) {}
-  virtual llvm::Value *codeGen(CodeGenContext &context);
-};
-
 class NVariableDeclaration : public NStatement {
 public:
   const NIdentifier &type;
