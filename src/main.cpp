@@ -8,7 +8,7 @@
 int main(int argc, char **argv) {
 
   /* const char *file_contents = readFileIntoBuffer("../test/test_src.txt"); */
-  const char* program = "int do_math(int a) { \"dookie\" x > a * 5 + 3 } do_math(34)";
+  const char* program = "int do_math(int a) {double x = a * 5.1} do_math(34)";
   Lexer *lex = new Lexer(program);
   std::cout << "BEGIN OUTPUT\n------------\n";
   std::cout << "Lexing: \n" << program << std::endl << std::endl;
