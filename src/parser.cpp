@@ -8,6 +8,9 @@ Parser::Parser(Lexer &lexer) : lexer(lexer) {
   root = new ast::NBlock();
 }
 
+ast::NExpression *Parser::parseExpression() {}
+ast::NStatement *Parser::parseStatement() {}
+
 ast::NInteger *Parser::parseInteger() {
   // Assertion that the current token is of type integer,
   // this function should be called if a tokdef::INT is encountered.
@@ -38,9 +41,19 @@ ast::NDouble *Parser::parseDouble() {
   return result;
 }
 
+ast::NStrLiteral *Parser::parseStrLiteral() {}
+ast::NCharConstant *Parser::parseCharConstant() {}
+
 ast::NIdentifier *Parser::parseIdentifier() {
   assert(tok->getType() == tokdef::ID);
   ast::NIdentifier *result = new ast::NIdentifier(tok->getPtrVal());
   tok = lexer.lexToken();
   return result;
 }
+
+ast::NMethodCall *Parser::parseMethodCall() {}
+ast::NBinaryOperator *Parser::parseBinaryOperator() {}
+ast::NAssignment *Parser::parseAssignment() {}
+ast::NBlock *Parser::parseBlock() {}
+ast::NVariableDeclaration *Parser::parseVariableDeclaration() {}
+ast::NFunctionDeclaration *Parser::parseFunctionDeclaration() {}

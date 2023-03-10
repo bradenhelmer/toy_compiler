@@ -4,9 +4,9 @@
 #include "utils.h"
 #include <fstream>
 #include <iostream>
+#include "parser.h"
 
 int main(int argc, char **argv) {
-
   /* const char *file_contents = readFileIntoBuffer("../test/test_src.txt"); */
   const char* program = "int do_math(int a) {double x = a * 5.1} do_math(34)";
   Lexer *lex = new Lexer(program);
